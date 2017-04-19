@@ -1,0 +1,111 @@
+<ion-view class="has-tabs">
+  <style>
+    .videopage {
+      margin: 0 0;
+    }
+    .tags {
+      margin: 10px 0px;
+    }
+  </style>
+  <ion-nav-title>Video</ion-nav-title>
+  <ion-content>
+    <div class="video-container">
+      <iframe ng-src="{{video.embed}}" allowfullscreen></iframe>
+    </div>
+    
+    <div class="tabs video-tabs">
+      <a class="tab-item video-tab" ng-class="tabs[0].ngclass" ng-click="infotab()">Info</a>
+      <a class="tab-item video-tab" ng-class="tabs[1].ngclass" ng-click="recommendtab()">Recommended</a>
+    </div>
+
+    <div ng-if="tabs[0].selected">
+      <div class="video-detail">
+        <h2 class="video-title">{{video.title}}</h2>
+        <ion-list>
+          <label class="item item-input">
+            <span class="input-label">Speaker</span>
+            {{video.speaker}}
+          </label>
+          <label class="item item-input">
+            <span class="input-label">Summary</span>
+            {{video.summary}}
+          </label>
+
+          <div class="item item-divider">Comments</div>
+          <button ng-if="authenticated" type="submit" ng-click="addcomment()" class="button button-block button-positive">
+            New Comment
+          </button>
+          <div ng-repeat="comment in video.comments">
+            <ion-item class="">
+              <p class="comment">{{comment.text}}</p>
+              <p class="item-date">{{comment.dt_created}}</p>
+              <p class="item-author">{{comment.poster}}</p>
+              <div style="clear: both; margin-bottom:8px;"></div>
+             <ion-option-button class="button-positive" ng-click="comment.collapse=!comment.collapse;hideOptions();">
+               <i ng-class="collapseclass(comment.collapse)" class="button button-icon icon collapse-icon"></i>
+             </ion-option-button>
+              <div ng-if="authenticated">
+                <div ng-if="comment.poster_username == currentuser">
+                  <ion-option-button class="button-assertive" ng-click="removecomment(comment.id)">
+                    Delete
+                  </ion-option-button>
+                </div>
+                <ion-option-button class="button-energized" ng-click="addreply(comment.id)">
+                  Reply
+                </ion-option-button>
+              </div>
+            </ion-item>
+            <ion-item ng-if="!comment.collapse" class="childcomment" ng-repeat="childcomment in comment.childcomments">
+              <p class="comment">{{childcomment.text}}</p>
+              <p class="item-date">{{childcomment.dt_created}}</p>
+              <p class="item-author">{{childcomment.poster}}</p>
+              <div style="clear: both;"></div>
+              <div ng-if="authenticated">
+                <div ng-if="childcomment.poster_username == currentuser">
+                  <ion-option-button class="button-assertive" ng-click="removereply(childcomment.id)">
+                    Delete
+                  </ion-option-button>
+                </div>
+                <ion-option-button class="button-energized" ng-click="addreply(comment.id)">
+                  Reply
+                </ion-option-button>
+              </div>
+            </ion-item>
+          </ion-list>
+        </div>
+      </div>
+    </div>
+
+    <div ng-if="tabs[1].selected">
+      <div class="video-detail" style="background-color:#F8F8F8; ">
+<ul class="list" style="padding-top: 1%;">
+<li class="item" style="margin: 0 0 1% 0; border-color: #FFFFFF !important;">
+<div class="row" ng-repeat="video in reccomendations">
+<div class="col col-33 "style ="background-color:blue;">
+  
+
+
+<div class= "col col-67">
+<div class="row"style="display:block;overflow:auto;">
+<p style="height:100%;white-space:normal;">
+{{video.title}} {{video.tags.name}}
+</p>
+</div>
+<br></br>
+<div class="row"style="">
+<img class="item-img" ng-src="https://img.youtube.com/vi/{{video.videoid}}/0.jpg" alt="thumbnail">
+<p class="item-views icon ion-eye"style="float:left;width:40%">1000</p>
+<p class="item-views icon ion-ios-pricetag" style="float:right;width:60%;text-align: right;" ng-repeat="tag in video.tags">
+{{tag.name}}
+</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+      </div>
+    </div>
+
+  </ion-content>
+
+</ion-view>
